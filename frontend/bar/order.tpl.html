@@ -1,0 +1,51 @@
+<!--
+  ~ #!/usr/bin/env python
+  ~ # -*- coding: UTF-8 -*-
+  ~
+  ~ __license__ = """
+  ~ Isomer Application Framework
+  ~ ============================
+  ~ Copyright (C) 2011- 2018 riot <riot@c-base.org> and others.
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  ~ """
+  -->
+
+<div class="well">
+    <h1>Bar ordering</h1>
+    <div class="well">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Beverage</th>
+                <th>Crates</th>
+                <th>Sum</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="item in $ctrl.order_items">
+                <td>
+                    1
+                </td>
+                <td>
+                    {{item.beverage.name}}
+                </td>
+                <td>{{item.crates}}</td>
+                <td>{{item.beverage.price_crate * item.crates}} €</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

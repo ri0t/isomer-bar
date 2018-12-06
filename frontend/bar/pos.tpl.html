@@ -1,0 +1,208 @@
+<!--
+  ~ #!/usr/bin/env python
+  ~ # -*- coding: UTF-8 -*-
+  ~
+  ~ __license__ = """
+  ~ Isomer Application Framework
+  ~ ============================
+  ~ Copyright (C) 2011- 2018 riot <riot@c-base.org> and others.
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  ~ """
+  -->
+
+<div class="well">
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+                <p class="navbar-brand">Point of Sale</p>
+            </div>
+
+            <div class="navbar-right">
+                <button type="button"
+                        ng-show="!$ctrl.user.signedin"
+                        class="btn btn-default navbar-btn">Sign in
+                </button>
+                <p ng-show="$ctrl.user.signedin" class="navbar-text">{{$ctrl.user.username}}</p>
+                <p class="navbar-text">{{$ctrl.clock | date:'short'}}</p>
+            </div>
+        </div>
+    </nav>
+
+
+    <div class="row">
+        <div id="sale_buttons" class="col-md-8">
+            <div class="item_group" ng-repeat="(name, group) in $ctrl.pos_buttons"
+                 ng-style="{'background-color': $ctrl.groups[name].color}">
+                <h3>{{name}}</h3>
+                <div gridster="$ctrl.gridsterOptions">
+                    <ul>
+                        <li data-gridster-item
+                            data-row="item.position.x"
+                            data-col="item.position.y"
+                            data-sizex="item.size.width"
+                            data-sizey="item.size.height"
+                            ng-repeat="(uuid, item) in group">
+
+                            <div class="pos-button" ng-click="$ctrl.add_item(uuid)">
+
+                            <span class="fa {{item.icon}}"
+                                  ng-style="{'color': $ctrl.groups[name].color}">
+                            </span>
+
+                                <span ng-style="{'color': $ctrl.groups[name].color}">{{item.name}}</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="order_display">
+                <h3>Order Display</h3>
+                <div class="order_view">
+                    <table class="table table-bordered table-condensed">
+                        <thead>
+                        <tr>
+                            <th class="text-center"><span class="fa fa-minus"></span></th>
+                            <th>Item</th>
+                            <th><span class="pull-right">Price</span></th>
+                        </tr>
+                        </thead>
+                        <tbody scroll-glue>
+                        <tr ng-repeat="(uuid, order) in $ctrl.orders"
+                            ng-class="{'danger': order.type === 'manual' && order.name !== 'Customer paid',
+                                       'info': order.type === 'manual' && order.name === 'Customer paid',
+                                       'success': order.type !== 'manual' && order.class !== 'alien',
+                                       'warning': order.type !== 'manual' && order.class === 'alien'}">
+                            <td class="text-center">
+                                <span class="fa fa-minus" ng-click="$ctrl.remove_order(uuid)"></span>
+                            </td>
+                            <td>{{order.name}}</td>
+                            <td><span class="pull-right">{{order.price | number: 2}}</span></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <h2>{{$ctrl.total_label}} <span class="pull-right">{{$ctrl.running_total | number: 2}} €</span></h2>
+            </div>
+            <hr/>
+
+            <div id="numerical_input">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-sm-2" for="comment_field">Comment:</label>
+                        <div class="col-sm-10">
+                            <input class="form-control pull-right" type="text" id="comment_field"
+                                   ng-model="$ctrl.comment_field"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2" for="numerical_value">Value:</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" type="text" id="numerical_value"
+                                   ng-model="$ctrl.numerical_input" ng-change="$ctrl.update_input()"/>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <button name="btn1" class="btn btn-default btn-lg" value="1"
+                                    ng-click='$ctrl.updateOutput(1)'>1
+                            </button>
+                            <button name="btn2" class="btn btn-default btn-lg" value="2"
+                                    ng-click='$ctrl.updateOutput(2)'>2
+                            </button>
+                            <button name="btn3" class="btn btn-default btn-lg" value="3"
+                                    ng-click='$ctrl.updateOutput(3)'>3
+                            </button>
+                            <br/>
+                            <button name="btn4" class="btn btn-default btn-lg" value="4"
+                                    ng-click='$ctrl.updateOutput(4)'>4
+                            </button>
+                            <button name="btn5" class="btn btn-default btn-lg" value="5"
+                                    ng-click='$ctrl.updateOutput(5)'>5
+                            </button>
+                            <button name="btn6" class="btn btn-default btn-lg" value="6"
+                                    ng-click='$ctrl.updateOutput(6)'>6
+                            </button>
+                            <button name="btnPlus" ng-disabled="$ctrl.finished" class="btn btn-info btnManualFunctions"
+                                    ng-click='$ctrl.add_manual()'>+
+                            </button>
+                            <br/>
+                            <button name="btn7" class="btn btn-default btn-lg" value="7"
+                                    ng-click='$ctrl.updateOutput(7)'>7
+                            </button>
+                            <button name="btn8" class="btn btn-default btn-lg" value="8"
+                                    ng-click='$ctrl.updateOutput(8)'>8
+                            </button>
+                            <button name="btn9" class="btn btn-default btn-lg" value="9"
+                                    ng-click='$ctrl.updateOutput(9)'>9
+                            </button>
+                            <button name="btnMinus" ng-disabled="$ctrl.finished" class="btn btn-info btnManualFunctions"
+                                    ng-click='$ctrl.add_manual(true)'>-
+                            </button>
+                            <br/>
+                            <button name="btn0" class="btn btn-default btn-lg" value="0"
+                                    ng-click='$ctrl.updateOutput(0)'>0
+                            </button>
+                            <button name="btnClear" class="btn btn-default btn-lg"
+                                    ng-click='$ctrl.clear_numeric_input()'>
+                                CLEAR
+                            </button>
+                            <button name="btnCalculateReturn" ng-show="$ctrl.finished"
+                                    class="btn btn-default btn-block btn-lg"
+                                    ng-click='$ctrl.calculate_return()'>RETURN
+                            </button>
+
+                        </div>
+                        <div class="col-sm-6">
+                            <button name="btnAlien" ng-disabled="$ctrl.finished" class="btn btn-block"
+                                    ng-class="{'btn-warning': $ctrl.alien}"
+                                    ng-click='$ctrl.alien = !$ctrl.alien'>{{$ctrl.alien ? 'Alien' : 'Member'}}
+                            </button>
+                            <button name="btnClear" class="btn btn-danger btn-block" ng-click='$ctrl.clear_all()'>CLEAR
+                                ORDER
+                            </button>
+                            <br/>
+                            <button name="btnSubmit" ng-disabled="$ctrl.finished" class="btn btn-info btn-block"
+                                    ng-click='$ctrl.submit_atari()'>
+                                ATARI ORDER
+                            </button>
+                            <button name="btnSubmit" ng-disabled="$ctrl.finished" class="btn btn-info btn-block"
+                                    ng-click='$ctrl.submit_coupons()'>
+                                COUPON ORDER
+                            </button>
+                            <br/>
+                            <button name="btnSubmit" ng-disabled="$ctrl.finished"
+                                    class="btn btn-success btn-lg btn-block"
+                                    ng-click='$ctrl.submit_cash()'>
+                                CASH ORDER
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
